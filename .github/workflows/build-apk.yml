@@ -13,12 +13,12 @@ jobs:
       with: { node-version: '22' }
     - run: npm install && npm run build || true
     - run: npx cap sync android
-    - name: Təzə imza faylı yaradırıq
+    - name: Yeni Keystore Yarat (Dogru Alias Ile)
       run: |
         cd android/app
         rm -f nibras-upload-key.jks
-        keytool -genkey -v -keystore nibras-upload-key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias nibras -storepass "nibras123" -keypass "nibras123" -dname "CN=Nibras, OU=App, O=Nibras, L=Baku, S=Baku, C=AZ"
-    - name: Təmiz Release APK yığırıq
+        keytool -genkey -v -keystore nibras-upload-key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias "nibras-upload" -storepass "nibras123" -keypass "nibras123" -dname "CN=Nibras, OU=App, O=Nibras, L=Baku, S=Baku, C=AZ"
+    - name: Release APK Olustur
       env:
         ANDROID_UPLOAD_KEYSTORE_PASSWORD: "nibras123"
         ANDROID_UPLOAD_KEY_PASSWORD: "nibras123"
