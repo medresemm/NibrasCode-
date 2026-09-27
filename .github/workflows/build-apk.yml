@@ -13,9 +13,15 @@ jobs:
       with: { node-version: '22' }
     - run: npm install && npm run build || true
     - run: npx cap sync android
-    - name: Build Android APK
-      run: cd android && chmod +x gradlew && ./gradlew assembleRelease -x signReleaseBundle -x signReleaseLocalizedJs
+    - name: Disable Signing Requirement in Gradle
+      run: |
+        cd android
+        # build.gradle faylinda release imzalama blokunu silirik ki, sifrə teleb etmesin
+        sed -i '/signingConfig/d' app/build.gradle
+        sed -i '/release {/,/}/c\    release {\n        minifyEnabled false\n    }' app/build.gradle
+    - name: Build Unsigned Release APK
+      run: cd android && chmod +x gradlew && ./gradlew assembleRelease
     - uses: actions/upload-artifact@v4
       with:
-        name: app-release-unsigned-apk
+        name: app-release-apk
         path: android/app/build/outputs/apk/release/app-release-unsigned.apk
